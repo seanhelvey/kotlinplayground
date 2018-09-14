@@ -1,5 +1,3 @@
-package blog
-
 import com.sun.xml.internal.ws.developer.SerializationFeature
 import io.ktor.application.*
 import io.ktor.features.CallLogging
