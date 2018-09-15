@@ -46,6 +46,7 @@ build.mustRunAfter clean
 
 jar {
     manifest {
+        //build/classes/kotlin/main/MainKt.class
         attributes "Main-Class": "MainKt"
     }
 
