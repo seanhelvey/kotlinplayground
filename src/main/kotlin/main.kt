@@ -2,6 +2,8 @@ import io.ktor.application.*
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
+import io.ktor.features.StatusPages
+import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
 import io.ktor.request.receive
 import io.ktor.response.*
@@ -40,6 +42,11 @@ fun Application.module() {
             val post = call.receive<PostSnippet>()
             snippets += Snippet(post.snippet.text)
             call.respond(mapOf("OK" to true))
+        }
+    }
+    install(StatusPages){
+        exception<Throwable> { cause ->
+            call.respond(HttpStatusCode.InternalServerError)
         }
     }
 }
