@@ -10,13 +10,9 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import model.*
+import service.DatabaseFactory
 import java.util.*
-
-data class Snippet(val text: String)
-
-data class PostSnippet(val snippet: PostSnippet.Text) {
-    data class Text(val text: String)
-}
 
 val snippets = Collections.synchronizedList(mutableListOf(
     Snippet("hello"),
@@ -26,11 +22,15 @@ val snippets = Collections.synchronizedList(mutableListOf(
 fun Application.module() {
     install(DefaultHeaders)
     install(CallLogging)
+
     install(ContentNegotiation) {
         jackson {
 
         }
     }
+
+    DatabaseFactory.init()
+
     install(Routing) {
         get("/") {
             call.respondText("API at /snippets")
