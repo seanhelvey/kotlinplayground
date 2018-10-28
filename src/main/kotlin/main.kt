@@ -11,7 +11,9 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import model.*
+import org.jetbrains.exposed.sql.insert
 import service.DatabaseFactory
+import service.DatabaseFactory.dbQuery
 import java.util.*
 
 val snippets = Collections.synchronizedList(mutableListOf(
@@ -42,6 +44,15 @@ fun Application.module() {
             val post = call.receive<PostSnippet>()
             snippets += Snippet(post.snippet.text)
             call.respond(mapOf("OK" to true))
+
+            //todo: refactor
+            //see https://ryanharrison.co.uk/2018/04/14/kotlin-ktor-exposed-starter.html
+            var key: Int? = 0
+            dbQuery {
+                key = Snippets.insert({
+                    it[text] = post.snippet.text
+                }) get Snippets.id
+            }
         }
     }
     install(StatusPages){

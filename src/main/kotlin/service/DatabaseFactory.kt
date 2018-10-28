@@ -10,14 +10,12 @@ import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.coroutines.experimental.CoroutineContext
-import org.h2.tools.Server.createTcpServer
-
-
 
 object DatabaseFactory {
 
     fun init() {
 
+        //todo: avoid running this each time
         Database.connect(hikari())
         transaction {
             create(Snippets)
@@ -31,13 +29,17 @@ object DatabaseFactory {
     }
 
     private fun hikari(): HikariDataSource {
-        val config = HikariConfig()
-        config.driverClassName = "org.h2.Driver"
-        config.jdbcUrl = "jdbc:h2:mem:test"
-        config.maximumPoolSize = 3
-        config.isAutoCommit = false
-        config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
-        config.validate()
+        val config = HikariConfig().also {
+
+            //todo: config for heroku
+            it.jdbcUrl = "jdbc:postgresql://localhost:5432/practice_tracker";
+            it.driverClassName = "org.postgresql.Driver"
+            it.maximumPoolSize = 3
+            it.isAutoCommit = false
+            it.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
+            it.validate()
+        }
+
         return HikariDataSource(config)
     }
 
