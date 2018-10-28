@@ -42,6 +42,9 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
+
 jar {
     manifest {
         //build/classes/kotlin/main/MainKt.class
